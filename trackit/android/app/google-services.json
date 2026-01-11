@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "660724537236",
+    "project_id": "budgetbuddy-34e4e",
+    "storage_bucket": "budgetbuddy-34e4e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:660724537236:android:c063111d8b66675ebe2181",
+        "android_client_info": {
+          "package_name": "com.example.budgetbuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "660724537236-lgm3v5ro1hgp2caf30r26ut474qijpku.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.budgetbuddy",
+            "certificate_hash": "a03da4a5bcf69ce77ee53876e62d4d679bcd870d"
+          }
+        },
+        {
+          "client_id": "660724537236-dvg9l3i6c7j7ipvl7nkk902argatrl2v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBw0kk3SPT9g8GnY2cTi6yDbiD5IF68LRI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "660724537236-dvg9l3i6c7j7ipvl7nkk902argatrl2v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "660724537236-u2n9hicieb9pr9gqvgvbs44672bel5d2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.budgetbuddy"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:660724537236:android:30e608f3fac3e9d3be2181",
+        "android_client_info": {
+          "package_name": "com.example.trackit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "660724537236-dvg9l3i6c7j7ipvl7nkk902argatrl2v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBw0kk3SPT9g8GnY2cTi6yDbiD5IF68LRI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "660724537236-dvg9l3i6c7j7ipvl7nkk902argatrl2v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "660724537236-u2n9hicieb9pr9gqvgvbs44672bel5d2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.budgetbuddy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
