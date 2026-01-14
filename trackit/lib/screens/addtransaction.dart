@@ -1,9 +1,13 @@
-import 'package:trackit/globalvariable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Addtransaction extends StatefulWidget {
-  const Addtransaction({super.key});
+  final String uid;
+  const Addtransaction({
+    required this.uid,
+    super.key
+  });
 
   @override
   State<Addtransaction> createState() => _AddtransactionState();
@@ -14,7 +18,35 @@ class _AddtransactionState extends State<Addtransaction> {
   final amount = TextEditingController();
   final purpose = TextEditingController();
   String date = DateFormat('d MMM, yyyy').format(DateTime.now());
-                  
+
+  Future<bool> addTransaction() async {
+    final amt = double.tryParse(amount.text.trim());
+    if (amt == null) return false;
+
+    try {
+      final txRef = FirebaseFirestore.instance.collection('transactions').doc(widget.uid);
+      final data = await txRef.collection("transaction").count().get();
+      final id = data.count.toString().padLeft(5, '0'); // keep zero-padding
+
+      // ensure we await the write
+      await txRef.collection('transaction').doc(id).set({
+        "title": purpose.text.trim(),
+        "amount": amt,
+        "type": "Debit",
+        "date": FieldValue.serverTimestamp()
+      }); 
+
+      // Atomically update Total on the parent document to avoid race conditions
+      await txRef.update({
+        "Total": FieldValue.increment(-amt),
+      });
+
+      return true;
+    } catch (e) {
+      debugPrint('addTransaction error: $e');
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,14 +172,12 @@ class _AddtransactionState extends State<Addtransaction> {
                 )
               ),
               TextButton(
-                onPressed: (){
-                  transactions.insert(0, {
-                    "title": purpose.text.trim(),
-                    "amount": double.parse(amount.text.trim()),
-                    "date": date,
-                    "type": "Debit"
-                  });
-                  Navigator.of(context).pop();
+                onPressed: () async {
+                  final success = await addTransaction();
+                  if(context.mounted)
+                  {
+                    Navigator.of(context).pop(success);
+                  }
                 }, 
                 child: Text("Add",
                   style: TextStyle(

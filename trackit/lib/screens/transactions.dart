@@ -2,10 +2,8 @@
 import 'package:flutter/material.dart';
 
 class Transactions extends StatelessWidget {
-  final String title;
-  final double amount;
-  final String date;
-  final String type;
+  final String title, amount, date, type;
+
   const Transactions({
     required this.title,
     required this.amount,

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:trackit/screens/googlelogin.dart';
 import 'package:trackit/screens/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,9 +30,14 @@ class _RegisterPageState extends State<RegisterPage> {
         password: passwordController.text.trim(),
       );
       await userCredential.user!.updateDisplayName(nameController.text.trim());
+      await FirebaseFirestore.instance.collection("transactions").doc(userCredential.user!.uid).set({
+        "Last Deposit": 0,
+        "LastDepDate": null,
+        "Total": 0
+      });
       
     }on FirebaseAuthException catch(e){
-      print(e.message);
+      debugPrint(e.message);
     }
   }
   

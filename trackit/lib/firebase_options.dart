@@ -82,4 +82,5 @@ class DefaultFirebaseOptions {
     iosClientId: '660724537236-lr1eof8dcdbb8qujicetu80cpr2ahthm.apps.googleusercontent.com',
     iosBundleId: 'com.example.trackit',
   );
+
 }

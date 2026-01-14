@@ -1,10 +1,13 @@
-import 'package:trackit/globalvariable.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Addfunds extends StatefulWidget {
-  const Addfunds({super.key});
+  final String uid;
+  const Addfunds({
+    required this.uid,
+    super.key
+  });
 
   @override
   State<Addfunds> createState() => _AddfundsState();
@@ -13,9 +16,44 @@ class Addfunds extends StatefulWidget {
 class _AddfundsState extends State<Addfunds> {
   final amount = TextEditingController();
   String date = DateFormat('d MMM, yyyy').format(DateTime.now());
+  
 
-  Future<void> addFund()async {
+  Future<bool> addFund() async {
+    final amt = double.tryParse(amount.text.trim());
+    if (amt == null) return false;
+
+    try{
+      final txRef = FirebaseFirestore.instance.collection('transactions').doc(widget.uid);
+      final data =  await txRef.collection("transaction").count().get();
+      final id = data.count.toString().padLeft(5,"0");
+
+
+      await txRef.collection('transaction').doc(id).set({
+        "title": "Deposit",
+        "amount": amt ,
+        "type": "Credit",
+        "date": FieldValue.serverTimestamp(),
+      });
+
+      await txRef.update({
+        "Total" : FieldValue.increment(amt),
+        "Last Deposit": num.parse(amount.text.trim()),
+        "LastDepDate": FieldValue.serverTimestamp(),
+      });
+
+      return true;
+    }catch(e)
+    {
+      debugPrint(e.toString());
+      return false;
+    }
     
+  }
+
+  @override
+  void dispose() {
+    amount.dispose();
+    super.dispose();
   }
 
   @override
@@ -103,17 +141,11 @@ class _AddfundsState extends State<Addfunds> {
                 )
               ),
               TextButton(
-                onPressed: (){
-                  transactions.insert(0,{
-                    "title": "Deposited",
-                    "amount": double.parse(amount.text.trim()),
-                    "date": date,
-                    "type": "Credit"
-                  });
-                  setState(() {
-                    amount.clear();
-                  });
-                  Navigator.of(context).pop();
+                onPressed: ()async {
+                  final success = await addFund();
+                  if(context.mounted){
+                    Navigator.of(context).pop(success);
+                  }
                 }, 
                 child: Text("Add",
                   style: TextStyle(

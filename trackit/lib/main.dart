@@ -20,7 +20,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'BudgetBuddy',
       debugShowCheckedModeBanner: false,
-      home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), 
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(), 
         builder: (context, snapshot){
           if(snapshot.connectionState==ConnectionState.waiting)
           {

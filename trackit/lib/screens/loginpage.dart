@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordController.text.trim()
       );
     }on FirebaseAuthException catch(e){
-      print(e.message);
+      debugPrint(e.message);
     }
   }
   @override

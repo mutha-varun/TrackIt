@@ -3,7 +3,14 @@ import 'package:trackit/screens/addtransaction.dart';
 import 'package:flutter/material.dart';
 
 class AddButton extends StatefulWidget {
-  const AddButton ({super.key});
+  
+  final String uid;
+  final VoidCallback? onTransactionAdded;
+  const AddButton ({
+    required this.uid,
+    this.onTransactionAdded,
+    super.key
+  });
 
   @override
   State<AddButton> createState() => _AddButtonState();
@@ -33,15 +40,20 @@ class _AddButtonState extends State<AddButton> {
               ),
               backgroundColor: WidgetStatePropertyAll(Colors.green.shade400)
             ),
-            onPressed: (){
-              showDialog(
+            onPressed: ()async {
+              final added = await showDialog<bool>(
                 context: context, 
                 builder: (BuildContext context){
                   return Dialog(
-                    child: Addfunds(),
+                    child: Addfunds(uid: widget.uid),
                   );
                 }
               );
+              if(added == true){
+                widget.onTransactionAdded?.call();
+                
+              }
+            
             }, 
             child: Container(
               alignment: Alignment.centerLeft,
@@ -82,15 +94,20 @@ class _AddButtonState extends State<AddButton> {
               ),
               backgroundColor: WidgetStatePropertyAll(Colors.red)
             ),
-            onPressed: (){
-              showDialog(
-                context: context, 
-                builder: (BuildContext context){
+            onPressed: () async {
+              final added = await showDialog<bool>(
+                context: context,
+                builder: (BuildContext context) {
                   return Dialog(
-                    child: Addtransaction(),
+                    child: Addtransaction(uid: widget.uid),
                   );
-                }
+                },
               );
+
+              if (added == true) {
+                widget.onTransactionAdded?.call();
+                //setState(() {}); // local rebuild as well
+              }
             }, 
             child: Row(
               children: [
@@ -100,12 +117,12 @@ class _AddButtonState extends State<AddButton> {
                   size: 25,
                 ),
                 Text("Add transaction",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500
-                    ),
-                  )
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500
+                  ),
+                )
               ],
             )
           ),
