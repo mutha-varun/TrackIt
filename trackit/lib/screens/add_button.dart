@@ -25,7 +25,7 @@ class _AddButtonState extends State<AddButton> {
       children: [
         SizedBox(
           height: 60,
-          width: 155,
+          width: 160,
           child: OutlinedButton(
             style:ButtonStyle(
               shape: WidgetStatePropertyAll(
@@ -51,7 +51,6 @@ class _AddButtonState extends State<AddButton> {
               );
               if(added == true){
                 widget.onTransactionAdded?.call();
-                
               }
             
             }, 
@@ -68,7 +67,7 @@ class _AddButtonState extends State<AddButton> {
                   Text("Add funds",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 17,
                       fontWeight: FontWeight.w500
                     ),
                   )
@@ -106,7 +105,6 @@ class _AddButtonState extends State<AddButton> {
 
               if (added == true) {
                 widget.onTransactionAdded?.call();
-                //setState(() {}); // local rebuild as well
               }
             }, 
             child: Row(

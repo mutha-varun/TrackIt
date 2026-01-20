@@ -16,11 +16,23 @@ class Addfunds extends StatefulWidget {
 class _AddfundsState extends State<Addfunds> {
   final amount = TextEditingController();
   String date = DateFormat('d MMM, yyyy').format(DateTime.now());
-  
+  late bool _isEnabled;
 
   Future<bool> addFund() async {
     final amt = double.tryParse(amount.text.trim());
-    if (amt == null) return false;
+    if (amt == null) 
+    {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Amount cannot be null",
+            style: TextStyle(
+              fontSize: 20
+            ),
+          )
+        )
+      );
+      return false;
+    }
 
     try{
       final txRef = FirebaseFirestore.instance.collection('transactions').doc(widget.uid);
@@ -33,6 +45,7 @@ class _AddfundsState extends State<Addfunds> {
         "amount": amt ,
         "type": "Credit",
         "date": FieldValue.serverTimestamp(),
+        "category": "Credit"
       });
 
       await txRef.update({
@@ -42,14 +55,18 @@ class _AddfundsState extends State<Addfunds> {
       });
 
       return true;
-    }catch(e)
-    {
+    }
+    catch(e){
       debugPrint(e.toString());
       return false;
     }
-    
   }
-
+  
+  @override
+  void initState() {
+    _isEnabled = true;
+    super.initState();
+  }
   @override
   void dispose() {
     amount.dispose();
@@ -129,9 +146,9 @@ class _AddfundsState extends State<Addfunds> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
-                onPressed: (){
+                onPressed: _isEnabled?(){
                   Navigator.of(context).pop();
-                }, 
+                }:null, 
                 
                 child: Text("Close",
                   style: TextStyle(
@@ -141,12 +158,18 @@ class _AddfundsState extends State<Addfunds> {
                 )
               ),
               TextButton(
-                onPressed: ()async {
+                onPressed: _isEnabled? ()async {
                   final success = await addFund();
                   if(context.mounted){
-                    Navigator.of(context).pop(success);
+                    if(Navigator.canPop(context)){ 
+                      Navigator.of(context).pop(success);
+                    }
                   }
-                }, 
+                  setState(() {
+                    _isEnabled = false;
+                  });
+                } :null, 
+                
                 child: Text("Add",
                   style: TextStyle(
                     color: Colors.green,

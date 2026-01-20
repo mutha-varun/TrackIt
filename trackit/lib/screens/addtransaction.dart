@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:trackit/categorizer.dart';
 
 class Addtransaction extends StatefulWidget {
   final String uid;
@@ -18,34 +19,84 @@ class _AddtransactionState extends State<Addtransaction> {
   final amount = TextEditingController();
   final purpose = TextEditingController();
   String date = DateFormat('d MMM, yyyy').format(DateTime.now());
+  late bool _isEnabled;
 
-  Future<bool> addTransaction() async {
+  Future<bool> addTransaction(BuildContext context) async {
     final amt = double.tryParse(amount.text.trim());
-    if (amt == null) return false;
+    if (amt == null) 
+    {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Amount cannot be null",
+            style: TextStyle(
+              fontSize: 20
+            ),
+          )
+        )
+      );
+      return false;
+    }
+    if (purpose.text.isEmpty) 
+    {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Purpose cannot be null",
+            style: TextStyle(
+              fontSize: 20
+            ),
+          )
+        )
+      );
+      return false;
+    }
 
     try {
       final txRef = FirebaseFirestore.instance.collection('transactions').doc(widget.uid);
       final data = await txRef.collection("transaction").count().get();
       final id = data.count.toString().padLeft(5, '0'); // keep zero-padding
+      final dataBalance = await txRef.get();
+      final balance = dataBalance.data()!["Total"];
+      final category = Categorizer.categorizeExpense(purpose.text.trim());
 
-      // ensure we await the write
-      await txRef.collection('transaction').doc(id).set({
-        "title": purpose.text.trim(),
-        "amount": amt,
-        "type": "Debit",
-        "date": FieldValue.serverTimestamp()
-      }); 
+      if(context.mounted){
+        if(balance-amt<0){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: 
+              Text("Can't overdraw funds",
+                style: TextStyle(
+                  fontSize: 20
+                ),
+              )
+            )
+          );
+        }
+        else{
+          await txRef.collection('transaction').doc(id).set({
+            "title": purpose.text.trim(),
+            "amount": amt,
+            "type": "Debit",
+            "date": FieldValue.serverTimestamp(),
+            "category": category
+          }); 
 
-      // Atomically update Total on the parent document to avoid race conditions
-      await txRef.update({
-        "Total": FieldValue.increment(-amt),
-      });
+          await txRef.update({
+            "Total": FieldValue.increment(-amt),
+          });
+        }
+        return true;
+      }
 
-      return true;
+      else {return false;}
     } catch (e) {
       debugPrint('addTransaction error: $e');
       return false;
     }
+  }
+
+  @override
+  void initState() {
+    _isEnabled = true;
+    super.initState();
   }
 
   @override
@@ -160,10 +211,9 @@ class _AddtransactionState extends State<Addtransaction> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
-                onPressed: (){
+                onPressed: _isEnabled?(){
                   Navigator.of(context).pop();
-                }, 
-                
+                }:null, 
                 child: Text("Close",
                   style: TextStyle(
                     color: Colors.red.shade600,
@@ -172,13 +222,18 @@ class _AddtransactionState extends State<Addtransaction> {
                 )
               ),
               TextButton(
-                onPressed: () async {
-                  final success = await addTransaction();
+                onPressed: _isEnabled?() async {
+                  final success = await addTransaction(context);
                   if(context.mounted)
                   {
-                    Navigator.of(context).pop(success);
+                    if(Navigator.canPop(context)){
+                      Navigator.of(context).pop(success);
+                    }
                   }
-                }, 
+                  setState(() {
+                    _isEnabled = false;
+                  });
+                }:null, 
                 child: Text("Add",
                   style: TextStyle(
                     color: Colors.green.shade600,

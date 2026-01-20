@@ -1,7 +1,6 @@
 //import 'package:budgetbuddy/globalvariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:trackit/screens/typeoftransaction.dart';
 import 'package:trackit/screens/transactions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +15,8 @@ class LastStatement extends StatefulWidget {
 class _LastStatementState extends State<LastStatement> {
 
   final String uid = FirebaseAuth.instance.currentUser!.uid;
+  final List<String> labels = const ["All", "Credit","Food", "Transport", "Entertainment", "Clothes", "Others"];
+  late String selectedLabel;
   String formatDate(Timestamp stamp){
     return DateFormat('d MMM, yyyy').format(stamp.toDate());
   }
@@ -25,10 +26,52 @@ class _LastStatementState extends State<LastStatement> {
   }
   
   @override
+  void initState() {
+    selectedLabel = labels[0];
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Typeoftransaction(),
+        Container(
+          //margin: EdgeInsets.only(left: 10),
+          //color: Colors.black,
+          height: 48,
+          child: ListView.builder(
+            itemCount: labels.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index){
+              String text = labels[index];
+              return Padding(
+                padding: const EdgeInsets.only(right: 3, left: 7),
+                child: GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      selectedLabel = text;
+                    });
+                  },
+                  child: Chip(
+                    color: WidgetStatePropertyAll(
+                      text==selectedLabel?Colors.white
+                      :const Color.fromARGB(255, 64, 83, 93)
+                    ),
+                    padding: EdgeInsets.only(top:5, bottom:5, left:9, right:9),
+                    side: BorderSide.none,
+                    label: Text(text,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: text==selectedLabel?Colors.black:Colors.white,
+                        fontWeight: FontWeight.bold
+                      )
+                    ), 
+                  ),
+                ),
+              );
+            }
+          ),
+        ),
         StreamBuilder(
           stream: FirebaseFirestore.instance.collection("transactions").doc(uid).collection("transaction").snapshots(),
           builder: (context, asyncSnapshot) {
@@ -38,12 +81,31 @@ class _LastStatementState extends State<LastStatement> {
                 child: Text("No transactions"),
               );
             }
+            final docs = asyncSnapshot.data!.docs;
+            
+            // Filter transactions based on selected label
+            final filteredDocs = selectedLabel == "All" 
+              ? docs 
+              : docs.where((doc) => doc['category'] == selectedLabel).toList();
+
+            if(filteredDocs.isEmpty){
+              return Center(
+                child: Text("No transactions",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Colors.black
+                  ),
+                ),
+              );
+            }
+
             return Flexible(
               child: ListView.builder(
                 padding: EdgeInsets.only(top: 4),
-                itemCount: asyncSnapshot.hasData?asyncSnapshot.data!.docs.length:0 ,
+                itemCount: filteredDocs.length,
                 itemBuilder: (context, index){
-                  final transaction = asyncSnapshot.data!.docs[asyncSnapshot.data!.docs.length-index-1].data();
+                  final transaction = filteredDocs[filteredDocs.length-index-1].data();
                   return Container(
                     margin: EdgeInsets.only(right: 3, left: 3, top: 12),
                     child: Transactions(title: transaction['title'] as String,

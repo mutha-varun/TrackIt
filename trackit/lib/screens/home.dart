@@ -18,10 +18,10 @@ class _HomeState extends State<Home> {
   List<Widget> pages = [HomeScreen(), LastStatement()];
 
   @override
-    void initState() {
-      currentIndex = 0;
-      super.initState();
-    }
+  void initState() {
+    currentIndex = 0;
+    super.initState();
+  }
 
 
   @override

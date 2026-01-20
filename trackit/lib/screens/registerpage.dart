@@ -22,6 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController(); 
+  late bool _isEnabled;
 
   Future<void> createUser() async {
     try{
@@ -35,10 +36,15 @@ class _RegisterPageState extends State<RegisterPage> {
         "LastDepDate": null,
         "Total": 0
       });
-      
     }on FirebaseAuthException catch(e){
       debugPrint(e.message);
     }
+  }
+  
+  @override
+  void initState() {
+   _isEnabled = true;
+    super.initState();
   }
   
   @override
@@ -93,7 +99,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 1,),
                   ElevatedButton(
-                    onPressed: () async{
+                    onPressed: _isEnabled?() async{
+                      setState(() {
+                        _isEnabled = false;
+                      });
                       await createUser();
                       if(context.mounted)
                       {
@@ -101,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           MaterialPageRoute(builder: (context)=> const LoginPage())
                         );
                       }
-                    }, 
+                    }:null, 
                     style: ButtonStyle(
                       backgroundColor: WidgetStatePropertyAll(Colors.green.shade300),
                       fixedSize: WidgetStatePropertyAll(Size(240, 55)),
