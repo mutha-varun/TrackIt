@@ -15,7 +15,7 @@ class LastStatement extends StatefulWidget {
 class _LastStatementState extends State<LastStatement> {
 
   final String uid = FirebaseAuth.instance.currentUser!.uid;
-  final List<String> labels = const ["All", "Credit","Food", "Transport", "Entertainment", "Clothes", "Others"];
+  final List<String> labels = const ["All", "Credit","Food", "Grocery","Transport", "Entertainment", "Clothes", "Others"];
   late String selectedLabel;
   String formatDate(Timestamp stamp){
     return DateFormat('d MMM, yyyy').format(stamp.toDate());

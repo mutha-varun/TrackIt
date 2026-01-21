@@ -8,7 +8,10 @@ class Categorizer {
     if (RegExp(r'(coffee|pizza|chai|biryani|meal|lunch|dinner|cafe|food|zomato|swiggy|breakfast|snack|restaurant|burger|mcd|subway)').hasMatch(text)) {
       return 'Food';
     }
-    
+
+    if(RegExp(r'zepto|blinkit').hasMatch(text)){
+      return "Grocery";
+    }
     // Transport
     if (RegExp(r'(uber|ola|auto|bus|fuel|petrol|parking|train|metro|rickshaw|taxi)').hasMatch(text)) {
       return 'Transport';

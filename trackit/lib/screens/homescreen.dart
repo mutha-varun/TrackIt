@@ -336,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SliverList.builder(
                     itemCount: itemCount,
                     itemBuilder: (context, index){
-                      final transaction = docs[itemCount-index-1].data();
+                      final transaction = docs[docs.length-index-1].data();
                       return Container(
                         margin: const EdgeInsets.only(right: 3, left: 3, top: 12),
                         child: Transactions(
