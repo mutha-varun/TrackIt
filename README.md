@@ -21,7 +21,7 @@ transactions in real time.
   - Automatic date tracking
 
 - **Category Filtering:**
-  - Filter transactions by All, Credit, Food, Transport
+  - Filter transactions by All, Credit, Food, Transport, Grocery, etc.
   - Color-coded amounts (green for deposits, red for expenses)
 
 - **Real-time Sync:** All data synced instantly via Firebase Firestore
