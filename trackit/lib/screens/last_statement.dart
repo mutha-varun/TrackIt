@@ -112,6 +112,7 @@ class _LastStatementState extends State<LastStatement> {
                       amount: amount(transaction['amount'] as num),
                       date: formatDate(transaction['date']),
                       type: transaction['type'] as String,
+                      category: transaction['category'] as String,
                     ),
                   );
                 }

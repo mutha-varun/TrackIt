@@ -2,18 +2,24 @@
 import 'package:flutter/material.dart';
 
 class Transactions extends StatelessWidget {
-  final String title, amount, date, type;
+  final String title, amount, date, type, category;
 
   const Transactions({
     required this.title,
     required this.amount,
     required this.date,
     required this.type,
+    required this.category,
     super.key
   });
 
   @override
   Widget build(BuildContext context) {
+    final List<String> label = ["Credit","Food", "Grocery","Transport", "Entertainment", "Clothes", "Others"];
+    final List<IconData> icons = [Icons.savings_rounded, Icons.restaurant_sharp, Icons.local_grocery_store_sharp, 
+    Icons.directions_car_outlined, Icons.theater_comedy_sharp, Icons.checkroom_sharp, Icons.more_horiz];
+    final index = label.indexOf(category);
+    
     return ListTile(
       dense: false,
       shape: RoundedRectangleBorder(
@@ -38,7 +44,7 @@ class Transactions extends StatelessWidget {
         radius: 27,
         backgroundColor: Colors.blueGrey,
         child: Icon(
-          Icons.shopping_cart,
+          icons[index],
           color: Colors.white,
           size: 32,
         ),
