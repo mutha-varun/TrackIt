@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:trackit/firebase_options.dart';
 import 'package:trackit/screens/home.dart';
 import 'package:trackit/screens/loginpage.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+   await GoogleSignIn.instance.initialize();
   runApp(const MyApp());
 }
 

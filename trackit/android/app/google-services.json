@@ -58,6 +58,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "660724537236-etc15u54qbvvv5cqptqi0ihabtthmsvv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trackit",
+            "certificate_hash": "a03da4a5bcf69ce77ee53876e62d4d679bcd870d"
+          }
+        },
+        {
           "client_id": "660724537236-dvg9l3i6c7j7ipvl7nkk902argatrl2v.apps.googleusercontent.com",
           "client_type": 3
         }

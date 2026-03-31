@@ -9,7 +9,7 @@ class Categorizer {
       return 'Food';
     }
 
-    if(RegExp(r'zepto|blinkit').hasMatch(text)){
+    if(RegExp(r'(zepto|blinkit)').hasMatch(text)){
       return "Grocery";
     }
     // Transport
