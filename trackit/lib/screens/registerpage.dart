@@ -37,7 +37,17 @@ class _RegisterPageState extends State<RegisterPage> {
         "Total": 0
       });
     }on FirebaseAuthException catch(e){
-      debugPrint(e.message);
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18
+                    )
+              )
+          )
+        );
+      }
     }
   }
   
@@ -76,7 +86,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 fontWeight: FontWeight.bold
               )
             ),
-
             Container(
               padding: EdgeInsets.all(10),
               child: Column(
@@ -99,17 +108,58 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 1,),
                   ElevatedButton(
-                    onPressed: _isEnabled?() async{
+                    onPressed: _isEnabled? ()async{
                       setState(() {
                         _isEnabled = false;
                       });
-                      await createUser();
-                      if(context.mounted)
-                      {
-                        Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context)=> const LoginPage())
+                      if(nameController.text.isEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Name cannot be empty",
+                            textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18
+                              ),
+                            )
+                          )
                         );
                       }
+                      else if(emailController.text.isEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("E-mail cannot be empty",
+                            textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18
+                              ),
+                            )
+                          )
+                        );
+                      }
+                      else if(passwordController.text.isEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Password is required",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18
+                              ),
+                            )
+                          )
+                        );
+                      }
+                      else{
+                        await createUser();
+                        if(context.mounted)
+                        {
+                          Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context)=> const LoginPage())
+                          );
+                        }
+                      }
+                      setState(() {
+                        _isEnabled = true;
+                      });
                     }:null, 
                     style: ButtonStyle(
                       backgroundColor: WidgetStatePropertyAll(Colors.green.shade300),

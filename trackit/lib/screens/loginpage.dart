@@ -19,10 +19,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> loginWithEmail() async{
     try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(), 
-        password: passwordController.text.trim()
-      );
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(), 
+          password: passwordController.text.trim()
+        );
+      
     }on FirebaseAuthException catch(e){
       debugPrint(e.message);
     }
@@ -85,13 +86,40 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     ElevatedButton(
                       onPressed: ()async{
-                        await loginWithEmail();
-                        if(context.mounted){
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => Home()
+                        if(emailController.text.isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("E-mail cannot be empty",
+                              textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18
+                                ),
+                              )
                             )
                           );
+                        }
+                        else if(passwordController.text.isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Password is required",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18
+                                ),
+                              )
+                            )
+                          );
+                        }
+                        else{
+                          await loginWithEmail();
+                          if(context.mounted){
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Home()
+                              )
+                            );
+                          }
                         }
                       },
                       style: ButtonStyle(
@@ -202,7 +230,6 @@ class _TextFieldUseState extends State<TextFieldUse> {
             width: 2
           )
         ),
-        
       ),
     );
   }
