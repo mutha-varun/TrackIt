@@ -2,7 +2,6 @@ import 'package:trackit/screens/googlelogin.dart';
 import 'package:trackit/screens/home.dart';
 import 'package:trackit/screens/registerpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,18 +15,149 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
+  final TextEditingController recoveryEmail = TextEditingController();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<void> loginWithEmail() async{
+  Future<bool> loginWithEmail() async{
     try{
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text.trim(), 
-          password: passwordController.text.trim()
-        );
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: emailController.text.trim(), 
+        password: passwordController.text.trim()
+      );
+
+      return true;
       
     }on FirebaseAuthException catch(e){
-      debugPrint(e.message);
+      //debugPrint(e.message);
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18
+              ),
+            )
+          )
+        );
+      }
+      return false;
     }
   }
+
+  Future<void> resetPasswordDialog() async{
+    await showDialog<void>(context: context, 
+      builder: (BuildContext context){
+        return AlertDialog(
+          contentPadding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 10),
+          content: SizedBox(
+            height: 120,
+            width: 250,
+            child: Column(
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                    hint: Text("Email",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderSide: BorderSide(
+                        width: 2,
+                        color: Colors.black
+                      )
+                    ),
+                  ),
+                  autofocus: true, 
+                  controller: recoveryEmail, 
+                  obscureText: false
+                ),
+                SizedBox(height: 14,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                        resetPassword();
+                      }, 
+                      child: Text("Send",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.blue
+                        ),
+                      )
+                    ),
+                    TextButton(onPressed: ()=>Navigator.of(context).pop(), 
+                      child: Text("Close",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.red
+                        ),
+                      )
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
+
+  Future<void> resetPassword() async{
+    try{ 
+      await _firebaseAuth.sendPasswordResetEmail(email: recoveryEmail.text.trim());
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Mail sent",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18
+              )
+            )
+          )
+        );
+      }
+    } on FirebaseAuthException catch(e){
+
+      if (e.code == 'user-not-found' && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18
+              ),
+            )
+          )
+        );
+      } 
+      else if (e.code == 'invalid-email' && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18
+              ),
+            )
+          )
+        );
+      }
+      throw Exception(e.message);
+    }catch(e){
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString()))
+        );
+      }
+    }
+
+    recoveryEmail.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,12 +197,9 @@ class _LoginPageState extends State<LoginPage> {
                 )
               ),
               Container(
-                decoration: BoxDecoration(
-                  
-                ),
                 padding: EdgeInsets.all(10),
                 child: Column(
-                  spacing: 20,
+                  spacing: 15,
                   children: [
                     TextFieldUse(hintText: "E-mail",
                       autofocus: true, 
@@ -84,11 +211,30 @@ class _LoginPageState extends State<LoginPage> {
                       controller: passwordController,
                       obscureText: true,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: ()async {
+                            //debugPrint("Tapped");
+                            await resetPasswordDialog();
+                          },
+                          child: Text("Forgot Password?",
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     ElevatedButton(
                       onPressed: ()async{
                         if(emailController.text.isEmpty){
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text("E-mail cannot be empty",
                               textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -100,7 +246,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         else if(passwordController.text.isEmpty){
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text("Password is required",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -111,21 +257,23 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         }
                         else{
-                          await loginWithEmail();
-                          if(context.mounted){
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Home()
-                              )
-                            );
+                          bool isLoggedIn = await loginWithEmail();
+                          if(isLoggedIn){
+                            if(context.mounted){
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Home()
+                                )
+                              );
+                            }
                           }
                         }
                       },
                       style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Colors.green.shade300),
-                        fixedSize: WidgetStatePropertyAll(Size(247, 55)),
-                        surfaceTintColor: WidgetStatePropertyAll(Colors.black),
+                        fixedSize: const WidgetStatePropertyAll(Size(247, 55)),
+                        surfaceTintColor: const WidgetStatePropertyAll(Colors.black),
                       ),
                       child: const Text("Continue Managing",
                         style: TextStyle(
@@ -137,19 +285,15 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
-                child: Divider(
-                  color: Colors.black,
-                  thickness: 1,
-                ),
-              ),
+              const Divider(
+                color: Colors.black,
+                thickness: 1,
+              ), 
               const Googlelogin(),
-              const SizedBox(height: 5,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have an account?",
+                  const Text("Don't have an account?",
                     style: TextStyle(
                       fontSize: 18
                     ),
@@ -160,7 +304,7 @@ class _LoginPageState extends State<LoginPage> {
                         MaterialPageRoute(builder: (context)=> RegisterPage()
                       ));
                     }, 
-                    child: Text("Register",
+                    child: const Text("Register",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18
@@ -168,7 +312,8 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   )
                 ],
-              )
+              ),
+              const SizedBox(height: 30,)
             ],
           ),
         ),
