@@ -23,6 +23,8 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,12 @@ class _HomeState extends State<Home> {
         automaticallyImplyLeading: false,
         backgroundColor: Color.fromRGBO(96, 96, 96, 1),
         foregroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: (){
+
+          }, 
+          icon: Icon(Icons.password_sharp)
+        ),
         title: Text("Hi, $name"),
         actions: [
           IconButton(

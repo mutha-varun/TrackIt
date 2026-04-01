@@ -1,4 +1,3 @@
-//import 'package:budgetbuddy/globalvariable.dart';
 import 'package:flutter/material.dart';
 
 class Transactions extends StatelessWidget {
@@ -21,9 +20,10 @@ class Transactions extends StatelessWidget {
     final index = label.indexOf(category);
     
     return ListTile(
+      horizontalTitleGap: 20,
       dense: false,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15)
+        borderRadius: BorderRadius.circular(20)
       ),
       subtitleTextStyle: TextStyle(
         color: Colors.white70,
