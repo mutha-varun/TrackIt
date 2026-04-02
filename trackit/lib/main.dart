@@ -13,17 +13,17 @@ void main() async{
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GoogleSignIn.instance.initialize();
   
-  runApp(const MyApp());
+  runApp(const TrackIt());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class TrackIt extends StatelessWidget {
+  const TrackIt({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BudgetBuddy',
+      title: 'TrackIt',
       debugShowCheckedModeBanner: false,
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(), 
