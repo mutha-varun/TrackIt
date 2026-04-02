@@ -1,8 +1,9 @@
+import 'package:trackit/screens/changepassword.dart';
 import 'package:trackit/screens/homescreen.dart';
 import 'package:trackit/screens/last_statement.dart';
-import 'package:trackit/screens/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:trackit/screens/signout.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,10 +13,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
+  final FirebaseAuth instance = FirebaseAuth.instance;
+  
   int currentIndex=0;
   String name = FirebaseAuth.instance.currentUser!.displayName!;
   List<Widget> pages = [HomeScreen(), LastStatement()];
+  
 
   @override
   void initState() {
@@ -23,8 +26,13 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  
-
+  Future<void> resetPasswordDialog() async{
+    await showDialog<void>(context: context, 
+      builder: (BuildContext context){
+        return Changepassword(instance: instance,);
+      }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +44,10 @@ class _HomeState extends State<Home> {
         backgroundColor: Color.fromRGBO(96, 96, 96, 1),
         foregroundColor: Colors.white,
         leading: IconButton(
-          onPressed: (){
-
+          onPressed: () async{
+            await resetPasswordDialog();
           }, 
-          icon: Icon(Icons.password_sharp)
+          icon: const Icon(Icons.password_sharp)
         ),
         title: Text("Hi, $name"),
         actions: [
@@ -47,52 +55,11 @@ class _HomeState extends State<Home> {
             onPressed: (){
               showDialog(context: context, 
                 builder: (context) {
-                  return AlertDialog(
-                    backgroundColor: Colors.black87,
-                    title: const Text("Logout",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                      ),
-                    ),
-                    content: const Text("Are you sure you want to logout?",
-                      style: TextStyle(
-                        fontSize: 17,
-                        color: Colors.white
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("No",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          FirebaseAuth.instance.signOut();
-                          Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => const LoginPage()) 
-                          );
-                        },
-                        child: const Text("Logout",
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
+                  return Signout(instance: instance);
                 }
               );
             },
-            icon: Icon(Icons.logout_rounded)
+            icon: const Icon(Icons.logout_rounded)
           )
         ],
       ),
@@ -109,7 +76,7 @@ class _HomeState extends State<Home> {
             });
           },
           iconSize: 38,
-          selectedIconTheme: IconThemeData(color: Colors.black),
+          selectedIconTheme: const IconThemeData(color: Colors.black),
           unselectedIconTheme: IconThemeData(color: Colors.grey.shade300),
           backgroundColor: Color.fromRGBO(85, 85, 85, 1),
           unselectedFontSize: 0,
@@ -117,11 +84,11 @@ class _HomeState extends State<Home> {
           currentIndex: currentIndex,
           elevation: 3,
           items: [
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.home),  
               label:"",
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart),
               label:"",
             ),

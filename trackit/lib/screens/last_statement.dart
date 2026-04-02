@@ -1,4 +1,3 @@
-//import 'package:budgetbuddy/globalvariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trackit/screens/transactions.dart';
@@ -35,9 +34,7 @@ class _LastStatementState extends State<LastStatement> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          //margin: EdgeInsets.only(left: 10),
-          //color: Colors.black,
+        SizedBox(
           height: 48,
           child: ListView.builder(
             itemCount: labels.length,
@@ -77,24 +74,27 @@ class _LastStatementState extends State<LastStatement> {
           builder: (context, asyncSnapshot) {
             if(!asyncSnapshot.hasData)
             {
-              return Center(
-                child: Text("No transactions"),
+              return Expanded(
+                child: Center(
+                  child: Text("No transactions"),
+                ),
               );
             }
             final docs = asyncSnapshot.data!.docs;
             
-            // Filter transactions based on selected label
-            final filteredDocs = selectedLabel == "All" 
-              ? docs 
-              : docs.where((doc) => doc['category'] == selectedLabel).toList();
+            
+            final filteredDocs = selectedLabel == "All" ? 
+            docs : docs.where((doc) => doc['category'] == selectedLabel).toList();
 
             if(filteredDocs.isEmpty){
-              return Center(
-                child: Text("No transactions",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Colors.black
+              return Expanded(
+                child: Center(
+                  child: Text("No transactions",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 28,
+                      color: Colors.white
+                    ),
                   ),
                 ),
               );
