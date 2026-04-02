@@ -43,18 +43,18 @@ class _GoogleloginState extends State<Googlelogin> {
     }
   }
 
-  Future<void> createData(UserCredential userCredential) async{
-    try{
-      await FirebaseFirestore.instance.collection("transactions").doc(userCredential.user!.uid).set({
-        "Last Deposit": 0,
-        "LastDepDate": null,
-        "Total": 0
-      });
-    } 
-    catch(e){
-      debugPrint(e.toString());
+    Future<void> createData(UserCredential userCredential) async{
+      try{
+        await FirebaseFirestore.instance.collection("transactions").doc(userCredential.user!.uid).set({
+          "Last Deposit": 0,
+          "LastDepDate": null,
+          "Total": 0
+        });
+      } 
+      catch(e){
+        debugPrint(e.toString());
+      }
     }
-  }
 
 
   @override 
@@ -75,7 +75,10 @@ class _GoogleloginState extends State<Googlelogin> {
         onPressed:() async{
           final user = await singinWithGoogle();
           if(user != null){
-            await createData(user);
+            if(user.additionalUserInfo?.isNewUser ?? false){
+              await createData(user);
+            }
+
             if(context.mounted){
               Navigator.pushReplacement(
                 context,
