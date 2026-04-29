@@ -48,19 +48,40 @@ class _LoginPageState extends State<LoginPage> {
     await showDialog<void>(context: context, 
       builder: (BuildContext context){
         return AlertDialog(
-          contentPadding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 10),
-          content: SizedBox(
-            height: 120,
+          contentPadding: EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 0),
+          content: Container(
+            padding: EdgeInsets.only(left:20, right: 20, top: 25),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+              begin : Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors:[
+                Color.fromRGBO(99, 115, 74, 1),
+                Color.fromRGBO(89, 140, 88, 1),
+                Color.fromRGBO(191, 204, 152, 1),
+                Color.fromRGBO(221, 232, 179, 1)
+                ]
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(20))
+            ),
+            height: 155,
             width: 250,
             child: Column(
               children: [
                 TextField(
                   decoration: InputDecoration(
-                    hint: Text("Email",
+                    hint: Text("E-mail",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.black
                       ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderSide: BorderSide(
+                        width: 2,
+                        color: Colors.black
+                      )
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -86,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text("Send",
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.blue
+                          color: Colors.blue.shade700
                         ),
                       )
                     ),
@@ -161,25 +182,27 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        width: double.infinity,
-        height: double.infinity,
-        padding: EdgeInsets.only(top:10, left:20, right:20, bottom:10),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin : Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors:[
-              Color.fromRGBO(99, 115, 74, 1),
-              Color.fromRGBO(89, 140, 88, 1),
-              Color.fromRGBO(191, 204, 152, 1),
-              Color.fromRGBO(221, 232, 179, 1)
-            ]
+      body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Container(
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          padding: EdgeInsets.only(top:10, left:20, right:20, bottom:10),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin : Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors:[
+                Color.fromRGBO(99, 115, 74, 1),
+                Color.fromRGBO(89, 140, 88, 1),
+                Color.fromRGBO(191, 204, 152, 1),
+                Color.fromRGBO(221, 232, 179, 1)
+              ]
+            ),
           ),
-        ),
-        child: SingleChildScrollView(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             spacing: 17,
             children: [
               const SizedBox(height: 10,),

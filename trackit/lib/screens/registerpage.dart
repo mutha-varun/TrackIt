@@ -60,155 +60,158 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: EdgeInsets.only(top:10, left:20, right:20, bottom:10),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin : Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors:[
-              Color.fromRGBO(99, 115, 74, 1),
-              Color.fromRGBO(89, 140, 88, 1),
-              Color.fromRGBO(191, 204, 152, 1),
-              Color.fromRGBO(221, 232, 179, 1)
-            ]
-          ),
-        ),
-        child: Column(
-          spacing: 12,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("BudgetBuddy",
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold
-              )
+      body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          padding: EdgeInsets.only(top:10, left:20, right:20, bottom:10),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin : Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors:[
+                Color.fromRGBO(99, 115, 74, 1),
+                Color.fromRGBO(89, 140, 88, 1),
+                Color.fromRGBO(191, 204, 152, 1),
+                Color.fromRGBO(221, 232, 179, 1)
+              ]
             ),
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                spacing: 15,
-                children: [
-                  TextFieldUse(hintText: "Name", 
-                    autofocus: true, 
-                    controller: nameController,
-                    obscureText: false,
-                  ),
-                  TextFieldUse(hintText: "E-mail",
-                    autofocus: false, 
-                    controller: emailController,
-                    obscureText: false,
-                  ),
-                  TextFieldUse(hintText: "Password", 
-                    autofocus: false, 
-                    controller: passwordController,
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 1,),
-                  ElevatedButton(
-                    onPressed: _isEnabled? ()async{
-                      setState(() {
-                        _isEnabled = false;
-                      });
-                      if(nameController.text.isEmpty){
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Name cannot be empty",
-                            textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 18
-                              ),
-                            )
-                          )
-                        );
-                      }
-                      else if(emailController.text.isEmpty){
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("E-mail cannot be empty",
-                            textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 18
-                              ),
-                            )
-                          )
-                        );
-                      }
-                      else if(passwordController.text.isEmpty){
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Password is required",
+          ),
+          child: Column(
+            spacing: 12,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("BudgetBuddy",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold
+                )
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  spacing: 15,
+                  children: [
+                    TextFieldUse(hintText: "Name", 
+                      autofocus: true, 
+                      controller: nameController,
+                      obscureText: false,
+                    ),
+                    TextFieldUse(hintText: "E-mail",
+                      autofocus: false, 
+                      controller: emailController,
+                      obscureText: false,
+                    ),
+                    TextFieldUse(hintText: "Password", 
+                      autofocus: false, 
+                      controller: passwordController,
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 1,),
+                    ElevatedButton(
+                      onPressed: _isEnabled? ()async{
+                        setState(() {
+                          _isEnabled = false;
+                        });
+                        if(nameController.text.isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Name cannot be empty",
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 18
-                              ),
+                                style: TextStyle(
+                                  fontSize: 18
+                                ),
+                              )
                             )
-                          )
-                        );
-                      }
-                      else{
-                        await createUser();
-                        if(context.mounted)
-                        {
-                          Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context)=> const LoginPage())
                           );
                         }
-                      }
-                      setState(() {
-                        _isEnabled = true;
-                      });
-                    }:null, 
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Colors.green.shade300),
-                      fixedSize: WidgetStatePropertyAll(Size(240, 55)),
-                      surfaceTintColor: WidgetStatePropertyAll(Colors.black),
+                        else if(emailController.text.isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("E-mail cannot be empty",
+                              textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18
+                                ),
+                              )
+                            )
+                          );
+                        }
+                        else if(passwordController.text.isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Password is required",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18
+                                ),
+                              )
+                            )
+                          );
+                        }
+                        else{
+                          await createUser();
+                          if(context.mounted)
+                          {
+                            Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context)=> const LoginPage())
+                            );
+                          }
+                        }
+                        setState(() {
+                          _isEnabled = true;
+                        });
+                      }:null, 
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Colors.green.shade300),
+                        fixedSize: WidgetStatePropertyAll(Size(240, 55)),
+                        surfaceTintColor: WidgetStatePropertyAll(Colors.black),
+                      ),
+                      child: const Text("Register",
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.black
+                        ),
+                      )
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+                child: Divider(
+                  color: Colors.black,
+                  thickness: 1,
+                ),
+              ),
+              const Googlelogin(),
+              const SizedBox(height:15,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Already have an account?",
+                    style: TextStyle(
+                      fontSize: 18
                     ),
-                    child: const Text("Register",
+                  ),
+                  TextButton(
+                    onPressed: (){
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context)=> LoginPage()
+                      ));
+                    }, 
+                    child: const Text("Login",
                       style: TextStyle(
-                        fontSize: 22,
-                        color: Colors.black
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold
                       ),
                     )
                   )
                 ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-              child: Divider(
-                color: Colors.black,
-                thickness: 1,
-              ),
-            ),
-            const Googlelogin(),
-            const SizedBox(height:15,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Already have an account?",
-                  style: TextStyle(
-                    fontSize: 18
-                  ),
-                ),
-                TextButton(
-                  onPressed: (){
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context)=> LoginPage()
-                    ));
-                  }, 
-                  child: const Text("Login",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                    ),
-                  )
-                )
-              ],
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
