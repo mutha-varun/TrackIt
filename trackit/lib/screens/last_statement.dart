@@ -56,81 +56,93 @@ class _LastStatementState extends State<LastStatement> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: 48,
-          child: ListView.builder(
-            itemCount: labels.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index){
-              String text = labels[index];
-              return Padding(
-                padding: const EdgeInsets.only(right: 3, left: 7),
+        Container(
+          padding: EdgeInsets.only(left: 5),
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(10)
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 48,
+                child: ListView.builder(
+                  itemCount: labels.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index){
+                    String text = labels[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 3, left: 5),
+                      child: GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            selectedLabel = text;
+                          });
+                        },
+                        child: Chip(
+                          color: WidgetStatePropertyAll(
+                            text==selectedLabel?Colors.white
+                            :const Color.fromARGB(255, 64, 83, 93)
+                          ),
+                          padding: EdgeInsets.only(top:5, bottom:5, left:9, right:9),
+                          side: BorderSide.none,
+                          label: Text(text,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: text==selectedLabel?Colors.black:Colors.white,
+                              fontWeight: FontWeight.bold
+                            )
+                          ), 
+                        ),
+                      ),
+                    );
+                  }
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      selectedLabel = text;
-                    });
+                  onTap: () async {
+                    final DateTimeRange? picked = await showDateRangePicker(
+                      context: context,
+                      firstDate: DateTime(2025),
+                      lastDate: DateTime.now(),
+                      initialDateRange: DateTimeRange(start: selectedStartDate, end: selectedEndDate),
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        selectedStartDate = picked.start;
+                        selectedEndDate = picked.end;
+                      });
+                    }
                   },
-                  child: Chip(
-                    color: WidgetStatePropertyAll(
-                      text==selectedLabel?Colors.white
-                      :const Color.fromARGB(255, 64, 83, 93)
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 64, 83, 93),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: EdgeInsets.only(top:5, bottom:5, left:9, right:9),
-                    side: BorderSide.none,
-                    label: Text(text,
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: text==selectedLabel?Colors.black:Colors.white,
-                        fontWeight: FontWeight.bold
-                      )
-                    ), 
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.calendar_today, color: Colors.white),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${DateFormat('d MMM').format(selectedStartDate)} - ${DateFormat('d MMM').format(selectedEndDate)}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              );
-            }
+              ),
+            ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: GestureDetector(
-            onTap: () async {
-              final DateTimeRange? picked = await showDateRangePicker(
-                context: context,
-                firstDate: DateTime(2025),
-                lastDate: DateTime.now(),
-                initialDateRange: DateTimeRange(start: selectedStartDate, end: selectedEndDate),
-              );
-              if (picked != null) {
-                setState(() {
-                  selectedStartDate = picked.start;
-                  selectedEndDate = picked.end;
-                });
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 64, 83, 93),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.calendar_today, color: Colors.white),
-                  const SizedBox(width: 8),
-                  Text(
-                    '${DateFormat('d MMM').format(selectedStartDate)} - ${DateFormat('d MMM').format(selectedEndDate)}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        
         StreamBuilder(
           stream: FirebaseFirestore.instance.collection("transactions").doc(uid).collection("transaction").snapshots(),
           builder: (context, asyncSnapshot) {
