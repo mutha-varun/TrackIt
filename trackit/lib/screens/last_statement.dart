@@ -16,6 +16,8 @@ class _LastStatementState extends State<LastStatement> {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
   final List<String> labels = const ["All", "Credit","Food", "Grocery","Transport", "Entertainment", "Clothes", "Others"];
   late String selectedLabel;
+  late DateTime selectedStartDate;
+  late DateTime selectedEndDate;
   String formatDate(Timestamp stamp){
     return DateFormat('d MMM, yyyy').format(stamp.toDate());
   }
@@ -27,7 +29,27 @@ class _LastStatementState extends State<LastStatement> {
   @override
   void initState() {
     selectedLabel = labels[0];
+    selectedEndDate = DateTime.now();
+    selectedStartDate = selectedEndDate.subtract(const Duration(days: 30));
+    _initializeStartDate();
     super.initState();
+  }
+
+  Future<void> _initializeStartDate() async {
+    try {
+      var docRef = await FirebaseFirestore.instance.collection("transactions").doc(uid).get();
+
+      Timestamp start = docRef.data()!["Created_at"];
+
+      setState(() {
+        selectedStartDate = start.toDate();
+      });
+      
+    } catch (e) {
+      setState(() {
+        selectedStartDate = selectedEndDate.subtract(const Duration(days: 30));
+      });
+    }
   }
 
   @override
@@ -69,12 +91,52 @@ class _LastStatementState extends State<LastStatement> {
             }
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: GestureDetector(
+            onTap: () async {
+              final DateTimeRange? picked = await showDateRangePicker(
+                context: context,
+                firstDate: DateTime(2025),
+                lastDate: DateTime.now(),
+                initialDateRange: DateTimeRange(start: selectedStartDate, end: selectedEndDate),
+              );
+              if (picked != null) {
+                setState(() {
+                  selectedStartDate = picked.start;
+                  selectedEndDate = picked.end;
+                });
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 64, 83, 93),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.calendar_today, color: Colors.white),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${DateFormat('d MMM').format(selectedStartDate)} - ${DateFormat('d MMM').format(selectedEndDate)}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         StreamBuilder(
           stream: FirebaseFirestore.instance.collection("transactions").doc(uid).collection("transaction").snapshots(),
           builder: (context, asyncSnapshot) {
             if(!asyncSnapshot.hasData)
             {
-              return Expanded(
+              return const Expanded(
                 child: Center(
                   child: Text("No transactions"),
                 ),
@@ -83,11 +145,16 @@ class _LastStatementState extends State<LastStatement> {
             final docs = asyncSnapshot.data!.docs;
             
             
-            final filteredDocs = selectedLabel == "All" ? 
-            docs : docs.where((doc) => doc['category'] == selectedLabel).toList();
+            final filteredDocs = docs.where((doc) {
+              final category = doc['category'] as String;
+              final date = (doc['date'] as Timestamp).toDate();
+              final categoryMatch = selectedLabel == "All" || category == selectedLabel;
+              final dateMatch = date.isAfter(selectedStartDate) && date.isBefore(selectedEndDate.add(const Duration(days: 1)));
+              return categoryMatch && dateMatch;
+            }).toList();
 
             if(filteredDocs.isEmpty){
-              return Expanded(
+              return const Expanded(
                 child: Center(
                   child: Text("No transactions",
                     style: TextStyle(

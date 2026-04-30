@@ -34,7 +34,8 @@ class _RegisterPageState extends State<RegisterPage> {
       await FirebaseFirestore.instance.collection("transactions").doc(userCredential.user!.uid).set({
         "Last Deposit": 0,
         "LastDepDate": null,
-        "Total": 0
+        "Total": 0,
+        "Created_at": FieldValue.serverTimestamp()
       });
     }on FirebaseAuthException catch(e){
       if(mounted){
