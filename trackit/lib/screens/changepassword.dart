@@ -51,16 +51,21 @@ class _ChangepasswordState extends State<Changepassword> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-          contentPadding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 10),
-          content: SizedBox(
-            height: 250,
+          contentPadding: EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 0),
+          content: Container(
+            padding: EdgeInsets.only(left: 20, right: 20, top:20, bottom: 10),
+            decoration: BoxDecoration(
+              color: Colors.black54,
+              borderRadius: BorderRadius.circular(27)
+            ),
+            height: 280,
             width: 250,
             child: Column(
               spacing: 10,
               children: [
                 TextField(
                   decoration: InputDecoration(
-                    hint: const Text("Email",
+                    hint: Text("Email",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.black
@@ -70,7 +75,14 @@ class _ChangepasswordState extends State<Changepassword> {
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                       borderSide: BorderSide(
                         width: 2,
-                        color: Colors.black
+                        color: Colors.black87
+                      )
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderSide: BorderSide(
+                        width: 2,
+                        color: Colors.black87
                       )
                     ),
                     focusedBorder: const OutlineInputBorder(
@@ -100,6 +112,13 @@ class _ChangepasswordState extends State<Changepassword> {
                         color: Colors.black
                       )
                     ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderSide: BorderSide(
+                        width: 2,
+                        color: Colors.black87
+                      )
+                    ),
                     focusedBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                       borderSide: BorderSide(
@@ -107,10 +126,11 @@ class _ChangepasswordState extends State<Changepassword> {
                         color: Colors.black
                       )
                     ),
-                    prefixIcon: IconButton(onPressed: ()=> setState(() {
-                      notShowOldPassword = !notShowOldPassword;
+                    suffixIcon: IconButton(onPressed: ()=> setState(() {
+                        notShowOldPassword = !notShowOldPassword;
                       }), 
-                      icon: notShowOldPassword?Icon(Icons.visibility_off):Icon(Icons.visibility)
+                      icon: notShowOldPassword?Icon(Icons.visibility_off):Icon(Icons.visibility), 
+                      color: Colors.grey.shade900,
                     )
                   ),
                   autofocus: false, 
@@ -132,6 +152,13 @@ class _ChangepasswordState extends State<Changepassword> {
                         color: Colors.black
                       )
                     ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderSide: BorderSide(
+                        width: 2,
+                        color: Colors.black87
+                      )
+                    ),
                     focusedBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                       borderSide: BorderSide(
@@ -139,10 +166,11 @@ class _ChangepasswordState extends State<Changepassword> {
                         color: Colors.black
                       )
                     ),
-                    prefixIcon: IconButton(onPressed: ()=> setState(() {
+                    suffixIcon: IconButton(onPressed: ()=> setState(() {
                       notShowNewPassword = !notShowNewPassword;
                       }), 
-                      icon: notShowNewPassword?Icon(Icons.visibility_off):Icon(Icons.visibility)
+                      icon: notShowNewPassword?Icon(Icons.visibility_off):Icon(Icons.visibility),
+                      color: Colors.grey.shade900,
                     )
                   ),
                   autofocus: false, 
