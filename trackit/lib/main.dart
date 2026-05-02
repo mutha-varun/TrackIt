@@ -34,7 +34,7 @@ class TrackIt extends StatelessWidget {
             child: CircularProgressIndicator(),
             );
           }
-          if(snapshot.data != null)
+          if(snapshot.hasData)
           {
             return const Home();
           }
