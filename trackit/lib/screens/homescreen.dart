@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return Container(
             height: 355,
             decoration: BoxDecoration(
-              color: Colors.black,
+              color: Color.fromRGBO(96, 96, 96, 1),
               borderRadius: BorderRadius.all(Radius.circular(13))
             ),
             child: Column(
@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return Container(
                 height: 355,
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Color.fromRGBO(96, 96, 96, 1),
                   borderRadius: BorderRadius.all(Radius.circular(13))
                 ),
                 child: Column(
