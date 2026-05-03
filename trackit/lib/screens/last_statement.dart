@@ -59,7 +59,7 @@ class _LastStatementState extends State<LastStatement> {
         Container(
           padding: EdgeInsets.only(left: 5),
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: Color.fromRGBO(96, 96, 96, 1),
             borderRadius: BorderRadius.circular(10)
           ),
           child: Column(
