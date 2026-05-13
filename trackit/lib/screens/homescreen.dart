@@ -56,7 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 355,
             decoration: BoxDecoration(
               color: Color.fromRGBO(96, 96, 96, 1),
-              borderRadius: BorderRadius.all(Radius.circular(13))
             ),
             child: Column(
               children: [
@@ -149,7 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 355,
                 decoration: BoxDecoration(
                   color: Color.fromRGBO(96, 96, 96, 1),
-                  borderRadius: BorderRadius.all(Radius.circular(13))
                 ),
                 child: Column(
                   children: [
@@ -266,7 +264,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   decoration: BoxDecoration(
                     color: Color.fromRGBO(96, 96, 96, 1),
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
                   ),
                   height: 355,
                 ),
@@ -348,8 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ],
-                ),
-                     
+                ),      
               ],
             );
           }       
